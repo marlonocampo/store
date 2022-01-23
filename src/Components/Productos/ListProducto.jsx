@@ -5,7 +5,7 @@ import {
     Card, CardActions,
     CardContent, Collapse,
     Grow, IconButton, ListItem, ListItemAvatar, ListItemText, Stack,
-    TableCell, Tooltip, Typography, Zoom,
+    TableCell, Tooltip, Zoom,
 } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import TableContainer from "@mui/material/TableContainer";
@@ -14,16 +14,14 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TableBody from "@mui/material/TableBody";
 import TablePagination from "@mui/material/TablePagination";
-import EditAttributesIcon from '@mui/icons-material/EditAttributes';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
+import EditIcon from '@mui/icons-material/ModeEditOutlined';
+import DeleteIcon from '@mui/icons-material/DeleteForeverOutlined';
+import ShoppingBagIcon from '@mui/icons-material/ShoppingBagOutlined';
 import List from "@mui/material/List";
-import DeleteIcon from '@mui/icons-material/Delete';
 import Alert from "@mui/material/Alert";
 import {TransitionGroup} from "react-transition-group";
 import {Add} from "@mui/icons-material";
 import productoApi from "../API/ProductoApi";
-import WithMaterialUI from '../Formik'
 const headtable = [
     {id: 1, label: 'Id', bg: "273565", color: 'white', bor: 0},
     {id: 2, label: 'Código', bg: "273565", color: 'white', bor: 0},
@@ -34,7 +32,8 @@ const headtable = [
     {id: 7, label: 'Categoría', bg: "273565", color: 'white', bor: 0},
     {id: 8, label: 'Acciones', bg: "273565", color: 'white', bor: 0},
 ]
-export default function ListProducto({productos, accion, setAccion, listaProductos, setListaProductos, categorias}) {
+
+export default function ListProducto({productos, accion, setAccion, listaProductos, setListaProductos}) {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -108,20 +107,20 @@ export default function ListProducto({productos, accion, setAccion, listaProduct
                                                             <TableCell
                                                                 align='left'> {producto.fechaingreso} </TableCell>
                                                             <TableCell
-                                                                align='left'> {producto.categoria_id} </TableCell>
+                                                                align='left'> {producto.nombrecategoria} </TableCell>
                                                             <TableCell>
                                                                 <Tooltip title="Editar">
                                                                     <IconButton
                                                                         color='primary'
                                                                     >
-                                                                        <EditAttributesIcon/>
+                                                                        <EditIcon/>
                                                                     </IconButton>
                                                                 </Tooltip>
                                                                 <Tooltip title="Eliminar">
                                                                     <IconButton
                                                                         color='error'
                                                                     >
-                                                                        <DeleteForeverIcon/>
+                                                                        <DeleteIcon/>
                                                                     </IconButton>
                                                                 </Tooltip>
                                                             </TableCell>
