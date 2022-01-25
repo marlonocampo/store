@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {
-    Button, Card, CardActions, CardContent, Grid, Grow, InputAdornment, MenuItem, Slide, Snackbar, TextField, Typography
+    Button, Card, CardActions, CardContent, Grid, Grow, InputAdornment, MenuItem, TextField, Typography
 } from "@mui/material";
 import {Add, MonetizationOnOutlined} from "@mui/icons-material";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
@@ -9,8 +9,9 @@ import DatePicker from "@mui/lab/DatePicker";
 import categoriaApi from '../API/categoriaApi'
 import productoApi from "../API/ProductoApi";
 import ListProducto from "./ListProducto";
-import vF from "../ValidarFormulario";
+import isDate from 'date-fns/isDate'
 import AlertError from "../AlertError";
+import validarCodigo from "../validarCodigo";
 
 export default function InsertProducto() {
     const [productos, setProductos] = useState([]);
@@ -39,6 +40,7 @@ export default function InsertProducto() {
         stock: false,
         categoria_id: false,
         descripcion: false,
+        codigoValidado: false
     });
     let formularioValidado = true;
     const [openAlert, setOpenAlert] = useState(false);
@@ -56,6 +58,15 @@ export default function InsertProducto() {
         getProductos().then(() => console.log("Productos listadas!"))
         getCategorias().then(() => console.log("Categorías Listados!"))
     }, []);
+
+    const handleDate = (date) => {
+        setDate(date);
+        if (date) {
+            setNewProducto({...newProducto, fechaingreso: date});
+        }else{
+            setNewProducto({...newProducto, fechaingreso: ''});
+        }
+    }
 
     const inputChange = (event) => {
         setNewProducto({
@@ -98,15 +109,15 @@ export default function InsertProducto() {
     }
 
     const anadir = () => {
-        newProducto.fechaingreso = vF.FormatDate({date});
         validar();
-        if (formularioValidado === true) {
+        validate.codigoValidado = validarCodigo({productos}, newProducto.codigo);
+        if (validate.codigoValidado === false && formularioValidado) {
             setNewProducto({...newProducto, idL: idLocal});
             setIdLocal(idLocal + 1);
             setListaProductos([...listaProductos, newProducto]);
+            console.log(listaProductos);
             setAcccion(2);
-            //formularioValidado = true
-            //setNewProducto({...newProducto,});
+            //setProductos(null);
         } else {
             validate.categoria_id = true;
         }
@@ -150,7 +161,8 @@ export default function InsertProducto() {
                                             ...validate,
                                             codigo: (newProducto.codigo.length === 0)
                                         })}
-                                        error={validate.codigo && newProducto.codigo.length === 0}
+                                        error={(validate.codigo && newProducto.codigo.length === 0) || validate.codigoValidado}
+                                        helperText={validate.codigoValidado ? 'Código Existente!' : false}
                                         fullWidth
                                         sx={{borderRadius: 4}}
                                         margin="none"
@@ -161,6 +173,7 @@ export default function InsertProducto() {
                                     >
                                     </TextField>
                                 </Grid>
+
                                 <Grid item xs={6} sm={6} md={6} lg={6}>
                                     <TextField
                                         name="precio"
@@ -192,15 +205,15 @@ export default function InsertProducto() {
                                             name='fecha'
                                             label="Fecha"
                                             inputFormat='dd/MM/yyyy'
-                                            onChange={setDate}
+                                            onChange={handleDate}
                                             renderInput={(params) =>
                                                 <TextField
                                                     {...params}
                                                     onBlur={() => setValidate({
                                                         ...validate,
-                                                        fechaingreso: (newProducto.fechaingreso.length === 0)
+                                                        fechaingreso: (!isDate(newProducto.fechaingreso))
                                                     })}
-                                                    error={validate.fechaingreso && newProducto.fechaingreso.length === 0}
+                                                    error={validate.fechaingreso && !isDate(newProducto.fechaingreso)}
                                                     margin='none'
                                                     fullWidth
                                                     variant='outlined'
@@ -210,6 +223,7 @@ export default function InsertProducto() {
                                         />
                                     </LocalizationProvider>
                                 </Grid>
+
                                 <Grid item xs={6} sm={6} md={6} lg={6}>
                                     <TextField
                                         name="stock"
@@ -228,8 +242,9 @@ export default function InsertProducto() {
                                     >
                                     </TextField>
                                 </Grid>
+
                                 <Grid item xs={12} lg={12}>
-                                    <TextField
+                                    < TextField
                                         onChange={inputChange}
                                         name="categoria_id"
                                         value={newProducto.categoria_id}
@@ -245,7 +260,7 @@ export default function InsertProducto() {
                                         label="Categoría"
                                         margin='none'
                                     >
-                                        <MenuItem value={newProducto.categoria_id}>Selecione una categoría...</MenuItem>
+                                        <MenuItem value={0}>Selecione una categoría...</MenuItem>
                                         {categorias.map((cat) => (
                                             <MenuItem key={cat.id} value={cat.id}>
                                                 {cat.nombrecategoria}
@@ -253,6 +268,7 @@ export default function InsertProducto() {
                                         ))}
                                     </TextField>
                                 </Grid>
+
                                 <Grid item xs={12} lg={12}>
                                     <TextField
                                         name='descripcion'
@@ -261,7 +277,6 @@ export default function InsertProducto() {
                                         descripcion: (newProducto.descripcion.length === 0)
                                     })}
                                         error={validate.descripcion && newProducto.descripcion.length === 0}
-
                                         fullWidth
                                         variant='outlined'
                                         multiline

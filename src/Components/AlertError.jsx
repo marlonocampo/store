@@ -1,5 +1,4 @@
-import {Slide, Snackbar} from "@mui/material";
-import {Alert} from "@mui/lab";
+import {Slide, Snackbar, Alert} from "@mui/material";
 import React from "react";
 
 export default function AlertError({Open, setOpen}) {

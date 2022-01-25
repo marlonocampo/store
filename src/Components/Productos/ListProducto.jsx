@@ -22,6 +22,7 @@ import Alert from "@mui/material/Alert";
 import {TransitionGroup} from "react-transition-group";
 import {Add} from "@mui/icons-material";
 import productoApi from "../API/ProductoApi";
+import AlertSucces from '../AlerSucces';
 const headtable = [
     {id: 1, label: 'Id', bg: "273565", color: 'white', bor: 0},
     {id: 2, label: 'Código', bg: "273565", color: 'white', bor: 0},
@@ -36,6 +37,7 @@ const headtable = [
 export default function ListProducto({productos, accion, setAccion, listaProductos, setListaProductos}) {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [openAlert, setOpenAlert] = useState(false);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -56,7 +58,11 @@ export default function ListProducto({productos, accion, setAccion, listaProduct
     }
     const insertar = async () => {
         const insert = await productoApi.Insert(listaProductos)
-        console.log(insert);
+        if(insert === true ){
+            setOpenAlert(true);
+        }else{
+            console.log('Error en insertar productos!');
+        }
     }
 
     return (
@@ -208,6 +214,7 @@ export default function ListProducto({productos, accion, setAccion, listaProduct
                         :
                         null
                     }
+                    <AlertSucces Open={openAlert} setOpen={setOpenAlert} mensaje={'Productos Insertados!'} type={'success'} />
                 </Card>
             </Grow>
         </>
