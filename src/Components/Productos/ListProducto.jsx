@@ -42,6 +42,7 @@ export default function ListProducto({productos, accion, setAccion, listaProduct
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
+        //esto ya está en git
     };
 
     const handleChangeRowsPerPage = (event) => {
