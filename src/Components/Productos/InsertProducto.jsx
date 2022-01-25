@@ -9,7 +9,6 @@ import DatePicker from "@mui/lab/DatePicker";
 import categoriaApi from '../API/categoriaApi'
 import productoApi from "../API/ProductoApi";
 import ListProducto from "./ListProducto";
-import isDate from 'date-fns/isDate'
 import AlertError from "../AlertError";
 import validarCodigo from "../validarCodigo";
 
@@ -63,7 +62,7 @@ export default function InsertProducto() {
         setDate(date);
         if (date) {
             setNewProducto({...newProducto, fechaingreso: date});
-        }else{
+        } else {
             setNewProducto({...newProducto, fechaingreso: ''});
         }
     }
@@ -211,9 +210,9 @@ export default function InsertProducto() {
                                                     {...params}
                                                     onBlur={() => setValidate({
                                                         ...validate,
-                                                        fechaingreso: (!isDate(newProducto.fechaingreso))
+                                                        fechaingreso: (newProducto.fechaingreso.length === 0)
                                                     })}
-                                                    error={validate.fechaingreso && !isDate(newProducto.fechaingreso)}
+                                                    error={validate.fechaingreso && newProducto.fechaingreso.length === 0}
                                                     margin='none'
                                                     fullWidth
                                                     variant='outlined'
@@ -285,7 +284,7 @@ export default function InsertProducto() {
                                         label="Descripción"
                                         margin='none'
                                         type='text'
-                                        inputProps={{maxLength: 50}}
+                                        inputProps={{maxLength: 50,}}
                                     >
                                     </TextField>
                                 </Grid>
