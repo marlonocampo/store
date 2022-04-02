@@ -21,9 +21,11 @@ import List from "@mui/material/List";
 import Alert from "@mui/material/Alert";
 import {TransitionGroup} from "react-transition-group";
 import {Add} from "@mui/icons-material";
-import productoApi from "../API/ProductoApi";
-import AlertSucces from '../AlerSucces';
-import Actualizar from "../Actualizar";
+import productoApi from "../../Services/API/ProductoApi";
+import AlertSucces from '../Alertas/AlertSucces';
+import ActualizarProducto from "./ActualizarProducto";
+import useStore from "../../Stores/Dialog";
+
 const headtable = [
     {id: 1, label: 'Id', bg: "273565", color: 'white', bor: 0},
     {id: 2, label: 'Código', bg: "273565", color: 'white', bor: 0},
@@ -42,7 +44,7 @@ export default function ListProducto({productos, accion, setAccion, listaProduct
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
-        //esto ya está en git
+        //esto ya está en github
     };
 
     const handleChangeRowsPerPage = (event) => {
@@ -217,7 +219,7 @@ export default function ListProducto({productos, accion, setAccion, listaProduct
                         null
                     }
                     <AlertSucces Open={openAlert} setOpen={setOpenAlert} mensaje={'Productos Insertados!'} type={'success'} />
-                    <Actualizar />
+                    <ActualizarProducto />
                 </Card>
             </Grow>
         </>

@@ -6,11 +6,11 @@ import {Add, MonetizationOnOutlined} from "@mui/icons-material";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import DatePicker from "@mui/lab/DatePicker";
-import categoriaApi from '../API/categoriaApi'
-import productoApi from "../API/ProductoApi";
+import categoriaApi from '../../Services/API/categoriaApi'
+import productoApi from "../../Services/API/ProductoApi";
 import ListProducto from "./ListProducto";
-import AlertError from "../AlertError";
-import validarCodigo from "../validarCodigo";
+import AlertError from "../Alertas/AlertError";
+import validarCodigo from "../Funciones/validarCodigo";
 
 export default function InsertProducto() {
     const [productos, setProductos] = useState([]);
@@ -118,7 +118,7 @@ export default function InsertProducto() {
             setAcccion(2);
             //setProductos(null);
         } else {
-            validate.categoria_id = true;
+            //validate.categoria_id = true;
         }
     }
 
@@ -130,7 +130,8 @@ export default function InsertProducto() {
                         <CardContent>
                             <Typography marginBottom={1} variant='h6' fontWeight={600} color='primary.main'
                                         align='center'>
-                                Agregar Productos
+                                Agregar Productos <br/>
+                                validar codigo y que los productos no agregan en tiempo real
                             </Typography>
                             <Grid container spacing={2} paddingX={3} justifyContent='center'>
                                 <Grid item xs={12} lg={12}>
