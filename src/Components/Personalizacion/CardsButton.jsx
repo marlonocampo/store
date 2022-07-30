@@ -1,9 +1,9 @@
 import React from "react";
 import {Button, CardMedia, Typography} from "@mui/material";
 import {makeStyles} from "@mui/styles";
-import imgVentas from "../Media/ventas.png";
-import imgProductos from "../Media/ventas.png";
-import imgFacturas from "../Media/facturas.png";
+import imgVentas from "../../Media/ventas.png";
+import imgProductos from "../../Media/ventas.png";
+import imgFacturas from "../../Media/facturas.png";
 import {NavLink} from "react-router-dom";
 
 const useStyles = makeStyles({

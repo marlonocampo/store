@@ -1,10 +1,10 @@
 import {Grid} from "@mui/material";
-import InsertProducto from "../Components/Productos/InsertProducto";
+import Insertar from "../Components/Productos/Insertar";
 export default function Productos() {
     return (
         <>
             <Grid container flex justifyContent='center' padding={1}>
-                <InsertProducto/>
+                <Insertar/>
             </Grid>
         </>
     )

@@ -8,6 +8,10 @@ const theme = createTheme({
         background: {
             default: '#ebf0ff'
         },
+        secondary: {
+            main: '#D61C4E',
+
+        }
     },
     typography: {
         fontFamily: 'QuickSans',

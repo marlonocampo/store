@@ -1,6 +1,6 @@
 import React, {useRef} from "react";
 import {Card, CardContent, Grid, Slide, Typography} from "@mui/material";
-import CardsButton from "../Components/CardsButton";
+import CardsButton from "../Components/Personalizacion/CardsButton";
 import TablaDisponibles from "./TablaDisponibles";
 
 export default function Home() {

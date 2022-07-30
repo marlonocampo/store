@@ -5,7 +5,7 @@ import {
     Card, CardActions,
     CardContent, Collapse,
     Grow, IconButton, ListItem, ListItemAvatar, ListItemText, Stack,
-    TableCell, Tooltip, Zoom,
+    TableCell, Tooltip, Typography, Zoom,
 } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import TableContainer from "@mui/material/TableContainer";
@@ -23,8 +23,8 @@ import {TransitionGroup} from "react-transition-group";
 import {Add} from "@mui/icons-material";
 import productoApi from "../../Services/API/ProductoApi";
 import AlertSucces from '../Alertas/AlertSucces';
-import ActualizarProducto from "./ActualizarProducto";
-import useStore from "../../Stores/Dialog";
+import ModalActualizar from "./ModalActualizar";
+import useStore from "../../Stores/formContext";
 
 const headtable = [
     {id: 1, label: 'Id', bg: "273565", color: 'white', bor: 0},
@@ -37,14 +37,23 @@ const headtable = [
     {id: 8, label: 'Acciones', bg: "273565", color: 'white', bor: 0},
 ]
 
-export default function ListProducto({productos, accion, setAccion, listaProductos, setListaProductos}) {
+export default function ListProducto({
+                                         productos,
+                                         accion,
+                                         setAccion,
+                                         listaProductos,
+                                         setListaProductos,
+                                         actualizar,
+                                         setActualizar
+                                     }) {
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(7);
     const [openAlert, setOpenAlert] = useState(false);
+    const {openDialog} = useStore();
+    const [newDatos, setNewDatos] = useState({a: 'marlon'});
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
-        //esto ya está en github
     };
 
     const handleChangeRowsPerPage = (event) => {
@@ -60,15 +69,104 @@ export default function ListProducto({productos, accion, setAccion, listaProduct
         const newListaProductos = listaProductos.filter((productoE) => productoE.idL !== idl);
         setListaProductos(newListaProductos);
     }
+
     const insertar = async () => {
-        const insert = await productoApi.Insert(listaProductos)
-        if(insert === true ){
+        const insert = await productoApi.Insert(listaProductos);
+        if (insert === true) {
+            setAccion(1);
+            setActualizar(actualizar ? false : true); //No cambiar esta lógica
             setOpenAlert(true);
-        }else{
+            setListaProductos([]);
+        } else {
             console.log('Error en insertar productos!');
         }
     }
 
+    const cargarDatosEditar = (productoEditar) => {
+        openDialog();
+        setNewDatos(productoEditar);
+    }
+
+    const Prevenir = () => {
+        if (productos.length > 0) {
+            return (
+                <>
+                    <TableContainer>
+                        <Table stickyHeader size='small'>
+                            <TableHead>
+                                <TableRow>
+                                    {headtable.map((col) => {
+                                        return (
+                                            <TableCell
+                                                key={col.id}
+                                                sx={{
+                                                    background: `#${col.bg}`,
+                                                    border: col.bor,
+                                                    color: col.color,
+                                                }}
+                                            >
+                                                {col.label}
+                                            </TableCell>
+                                        )
+                                    })}
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {productos
+                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                    .map((producto) => {
+                                        return (
+                                            <TableRow hover role="checkbox" tabIndex={-1} key={producto.id}>
+                                                <TableCell align='left'> {producto.id} </TableCell>
+                                                <TableCell align='left'> {producto.codigo} </TableCell>
+                                                <TableCell align='left'> {producto.nombre} </TableCell>
+                                                <TableCell align='left'> {producto.precio} </TableCell>
+                                                <TableCell align='left'> {producto.stock} </TableCell>
+                                                <TableCell
+                                                    align='left'> {producto.fechaingreso} </TableCell>
+                                                <TableCell
+                                                    align='left'> {producto.nombrecategoria} </TableCell>
+                                                <TableCell>
+                                                    <Tooltip title="Editar">
+                                                        <IconButton
+                                                            color='primary'
+                                                            onClick={() => cargarDatosEditar(producto)}
+                                                        >
+                                                            <EditIcon
+                                                            />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                    <Tooltip title="Eliminar">
+                                                        <IconButton
+                                                            color='error'
+                                                        >
+                                                            <DeleteIcon/>
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </TableCell>
+                                            </TableRow>
+                                        );
+                                    })
+                                }
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    <TablePagination
+                        sx={{background: 'white', width: '100%'}}
+                        rowsPerPageOptions={[7, 14]}
+                        component="div"
+                        count={productos.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onPageChange={handleChangePage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                    />
+                </>
+            )
+        } else {
+            return <Typography m={3} align={'center'} variant="h5">Algo salió mal! :(</Typography>
+        }
+    }
     return (
         <>
             <Grow in={true} timeout={300}>
@@ -83,76 +181,16 @@ export default function ListProducto({productos, accion, setAccion, listaProduct
                         </Button>
                         {accion === 1 ?
                             <Paper sx={{width: '100%', overflow: 'auto', marginTop: 2}}>
-                                <TableContainer>
-                                    <Table stickyHeader size='small'>
-                                        <TableHead>
-                                            <TableRow>
-                                                {headtable.map((col) => {
-                                                    return (
-                                                        <TableCell
-                                                            key={col.id}
-                                                            sx={{
-                                                                background: `#${col.bg}`,
-                                                                border: col.bor,
-                                                                color: col.color,
-                                                            }}
-                                                        >
-                                                            {col.label}
-                                                        </TableCell>
-                                                    )
-                                                })}
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {productos
-                                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                                .map((producto) => {
-                                                    return (
-                                                        <TableRow hover role="checkbox" tabIndex={-1} key={producto.id}>
-                                                            <TableCell align='left'> {producto.id} </TableCell>
-                                                            <TableCell align='left'> {producto.codigo} </TableCell>
-                                                            <TableCell align='left'> {producto.nombre} </TableCell>
-                                                            <TableCell align='left'> {producto.precio} </TableCell>
-                                                            <TableCell align='left'> {producto.stock} </TableCell>
-                                                            <TableCell
-                                                                align='left'> {producto.fechaingreso} </TableCell>
-                                                            <TableCell
-                                                                align='left'> {producto.nombrecategoria} </TableCell>
-                                                            <TableCell>
-                                                                <Tooltip title="Editar">
-                                                                    <IconButton
-                                                                        color='primary'
-                                                                    >
-                                                                        <EditIcon/>
-                                                                    </IconButton>
-                                                                </Tooltip>
-                                                                <Tooltip title="Eliminar">
-                                                                    <IconButton
-                                                                        color='error'
-                                                                    >
-                                                                        <DeleteIcon/>
-                                                                    </IconButton>
-                                                                </Tooltip>
-                                                            </TableCell>
-                                                        </TableRow>
-                                                    );
-                                                })}
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
-                                <TablePagination
-                                    sx={{background: 'white', width: '100%'}}
-                                    rowsPerPageOptions={[5, 10]}
-                                    component="div"
-                                    count={productos.length}
-                                    rowsPerPage={rowsPerPage}
-                                    page={page}
-                                    onPageChange={handleChangePage}
-                                    onRowsPerPageChange={handleChangeRowsPerPage}
-                                />
+                                {Prevenir()}
                             </Paper>
                             : accion === 2 ?
-                                <Paper sx={{width: '100%', overflow: 'auto', marginTop: 2, maxHeight: '54vh', minHeight: '54vh'}}>
+                                <Paper sx={{
+                                    width: '100%',
+                                    overflow: 'auto',
+                                    marginTop: 2,
+                                    maxHeight: '54vh',
+                                    minHeight: '54vh'
+                                }}>
                                     {listaProductos.length > 0 ?
                                         <List sx={{paddingX: 4}}>
                                             <TransitionGroup>
@@ -218,16 +256,12 @@ export default function ListProducto({productos, accion, setAccion, listaProduct
                         :
                         null
                     }
-                    <AlertSucces Open={openAlert} setOpen={setOpenAlert} mensaje={'Productos Insertados!'} type={'success'} />
-                    <ActualizarProducto />
+                    <AlertSucces Open={openAlert} setOpen={setOpenAlert} mensaje={'Productos Insertados!'}
+                                 type={'success'}/>
+
+                    <ModalActualizar Datos={{newDatos, setNewDatos}}/>
                 </Card>
             </Grow>
         </>
     )
 }
-
-
-//<Typography marginBottom={2} variant='h6' fontWeight={600}
-//                                     color='primary.main'>
-//                             Inventario
-//                         </Typography>

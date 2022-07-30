@@ -12,7 +12,7 @@ import ListProducto from "./ListProducto";
 import * as yup from 'yup'
 import vF from "../ValidarFormulario";
 
-export default function InsertProducto() {
+export default function Insertar() {
     const [productos, setProductos] = useState([]);
     const [date, setDate] = useState(null);
     const [categorias, setCategorias] = useState([])
