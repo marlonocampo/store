@@ -44,7 +44,8 @@ export default function ListProducto({
                                          listaProductos,
                                          setListaProductos,
                                          actualizar,
-                                         setActualizar
+                                         setActualizar,
+                                         categorias
                                      }) {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(7);
@@ -83,8 +84,8 @@ export default function ListProducto({
     }
 
     const cargarDatosEditar = (productoEditar) => {
-        openDialog();
         setNewDatos(productoEditar);
+        openDialog();
     }
 
     const Prevenir = () => {
@@ -259,7 +260,7 @@ export default function ListProducto({
                     <AlertSucces Open={openAlert} setOpen={setOpenAlert} mensaje={'Productos Insertados!'}
                                  type={'success'}/>
 
-                    <ModalActualizar Datos={{newDatos, setNewDatos}}/>
+                    <ModalActualizar Datos={{newDatos, setNewDatos, categorias}}/>
                 </Card>
             </Grow>
         </>

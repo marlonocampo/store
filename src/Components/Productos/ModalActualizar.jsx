@@ -2,7 +2,6 @@ import * as React from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import {DialogActions, DialogContent, FormControl, TextField, Grid, MenuItem} from '@mui/material';
-import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import useStore from "../../Stores/formContext";
@@ -17,7 +16,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 export default function ModalActualizar({Datos}) {
-    const {newDatos} = Datos;
+    const {newDatos, setNewDatos, categorias} = Datos;
     const {dialog, closeDialog} = useStore();
     const [date, setDate] = useState(null);
 
@@ -26,7 +25,9 @@ export default function ModalActualizar({Datos}) {
     }
 
     const valueInputs = (event) => {
-
+            setNewDatos({...newDatos,
+            [event.target.name] : event.target.value}
+        )
     }
 
     return (
@@ -51,11 +52,11 @@ export default function ModalActualizar({Datos}) {
                                 <TextField
                                     onChange={valueInputs}
                                     value={newDatos.nombre}
+                                    name={'nombre'}
                                     variant="filled"
                                     size="small"
                                     label="Nombre del producto"
                                     margin="dense">
-
                                 </TextField>
                             </FormControl>
                         </Grid>
@@ -64,8 +65,9 @@ export default function ModalActualizar({Datos}) {
                                 <TextField
                                     onChange={valueInputs}
                                     value={newDatos.codigo}
+                                    name='codigo'
                                     variant="filled"
-                                    type='number'
+                                    type='text'
                                     size="small"
                                     fullWidth
                                     label="Código"
@@ -78,6 +80,7 @@ export default function ModalActualizar({Datos}) {
                                 <TextField
                                     onChange={valueInputs}
                                     value={newDatos.precio}
+                                    name='precio'
                                     variant="filled"
                                     type='number'
                                     size="small"
@@ -114,6 +117,7 @@ export default function ModalActualizar({Datos}) {
                                 <TextField
                                     onChange={valueInputs}
                                     value={newDatos.stock}
+                                    name='stock'
                                     variant="filled"
                                     type='number'
                                     size="small"
@@ -128,7 +132,7 @@ export default function ModalActualizar({Datos}) {
                             <FormControl fullWidth>
                                 < TextField
                                     onChange={valueInputs}
-                                    value={newDatos.categoria_id}
+                                    value={`${newDatos.categoria_id}`}
                                     name="categoria_id"
                                     error={false}
                                     fullWidth
@@ -138,7 +142,13 @@ export default function ModalActualizar({Datos}) {
                                     label="Categoría"
                                     margin='dense'
                                 >
-                                    <MenuItem value={0}>Selecione una categoría...</MenuItem>
+                                    <MenuItem key={0} value={0}>Selecione una categoría...</MenuItem>
+                                    {categorias.length > 0 ?
+                                        categorias.map((cat) => (
+                                            <MenuItem key={cat.id} value={cat.id}>
+                                                {cat.nombrecategoria}
+                                            </MenuItem>
+                                    )) : null}
                                 </TextField>
                             </FormControl>
                         </Grid>

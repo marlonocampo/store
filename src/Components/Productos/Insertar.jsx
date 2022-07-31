@@ -255,10 +255,12 @@ export default function Insertar() {
                                         margin='none'
                                     >
                                         <MenuItem value={0}>Selecione una categoría...</MenuItem>
-                                        {categorias.length > 0 ? categorias.map((cat) => (
-                                            <MenuItem key={cat.id} value={cat.id}>
-                                                {cat.nombrecategoria}
-                                            </MenuItem>)) : null}
+                                        {categorias.length > 0 ?
+                                            categorias.map((cat) => (
+                                                <MenuItem key={cat.id} value={cat.id}>
+                                                    {cat.nombrecategoria}
+                                                </MenuItem>))
+                                            : null}
                                     </TextField>
                                 </Grid>
 
