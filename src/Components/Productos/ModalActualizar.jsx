@@ -15,8 +15,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="down" ref={ref} {...props} />;
 });
 
-export default function ModalActualizar({Datos}) {
-    const {newDatos, setNewDatos, categorias} = Datos;
+export default function ModalActualizar({editDatos, setEditDatos, categorias}) {
     const {dialog, closeDialog} = useStore();
     const [date, setDate] = useState(null);
 
@@ -25,9 +24,10 @@ export default function ModalActualizar({Datos}) {
     }
 
     const valueInputs = (event) => {
-            setNewDatos({...newDatos,
-            [event.target.name] : event.target.value}
-        )
+        setEditDatos({
+            ...editDatos,
+            [event.target.name]: event.target.value
+        })
     }
 
     return (
@@ -40,7 +40,7 @@ export default function ModalActualizar({Datos}) {
                 maxWidth='sm'
                 fullWidth={true}
             >
-                <DialogTitle sx={{p: 3}}> Actualizar Información del artículo</DialogTitle>
+                <DialogTitle sx={{p: 3}}> Actualizar Información del artículo {`- ${editDatos.nombre}`}</DialogTitle>
                 <DialogContent dividers>
                     <Grid
                         gridTemplateColumns="repeat(12, 1fr)"
@@ -51,7 +51,7 @@ export default function ModalActualizar({Datos}) {
                             <FormControl fullWidth>
                                 <TextField
                                     onChange={valueInputs}
-                                    value={newDatos.nombre}
+                                    value={editDatos.nombre}
                                     name={'nombre'}
                                     variant="filled"
                                     size="small"
@@ -64,7 +64,7 @@ export default function ModalActualizar({Datos}) {
                             <FormControl fullWidth>
                                 <TextField
                                     onChange={valueInputs}
-                                    value={newDatos.codigo}
+                                    value={editDatos.codigo}
                                     name='codigo'
                                     variant="filled"
                                     type='text'
@@ -79,7 +79,7 @@ export default function ModalActualizar({Datos}) {
                             <FormControl fullWidth>
                                 <TextField
                                     onChange={valueInputs}
-                                    value={newDatos.precio}
+                                    value={editDatos.precio}
                                     name='precio'
                                     variant="filled"
                                     type='number'
@@ -94,20 +94,21 @@ export default function ModalActualizar({Datos}) {
                             <FormControl fullWidth>
                                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                                     <DatePicker
-                                        value={newDatos.fechaingreso}
-                                        name='fecha'
+                                        value={editDatos.fechaingreso}
+                                        name='fechaingreso'
                                         label="Fecha"
                                         inputFormat='dd/MM/yyyy'
                                         onChange={cambioFecha}
 
-                                        renderInput={(params) => <TextField
-                                            {...params}
-                                            error={false}
-                                            margin='dense'
-                                            fullWidth
-                                            variant='filled'
-                                            size='small'
-                                        />}
+                                        renderInput={(params) =>
+                                            <TextField
+                                                {...params}
+                                                error={false}
+                                                margin='dense'
+                                                fullWidth
+                                                variant='filled'
+                                                size='small'
+                                            />}
                                     />
                                 </LocalizationProvider>
                             </FormControl>
@@ -116,7 +117,7 @@ export default function ModalActualizar({Datos}) {
                             <FormControl fullWidth>
                                 <TextField
                                     onChange={valueInputs}
-                                    value={newDatos.stock}
+                                    value={editDatos.stock}
                                     name='stock'
                                     variant="filled"
                                     type='number'
@@ -132,7 +133,7 @@ export default function ModalActualizar({Datos}) {
                             <FormControl fullWidth>
                                 < TextField
                                     onChange={valueInputs}
-                                    value={`${newDatos.categoria_id}`}
+                                    value={`${editDatos.categoria_id}`}
                                     name="categoria_id"
                                     error={false}
                                     fullWidth
@@ -142,13 +143,13 @@ export default function ModalActualizar({Datos}) {
                                     label="Categoría"
                                     margin='dense'
                                 >
-                                    <MenuItem key={0} value={0}>Selecione una categoría...</MenuItem>
+                                    <MenuItem value={0}>Selecione una categoría...</MenuItem>
                                     {categorias.length > 0 ?
                                         categorias.map((cat) => (
                                             <MenuItem key={cat.id} value={cat.id}>
                                                 {cat.nombrecategoria}
                                             </MenuItem>
-                                    )) : null}
+                                        )) : null}
                                 </TextField>
                             </FormControl>
                         </Grid>
@@ -156,7 +157,7 @@ export default function ModalActualizar({Datos}) {
                             <FormControl fullWidth>
                                 < TextField
                                     onChange={valueInputs}
-                                    value={newDatos.descripcion}
+                                    value={editDatos.descripcion}
                                     name="descripcion"
                                     error={false}
                                     fullWidth

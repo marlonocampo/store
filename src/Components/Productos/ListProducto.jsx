@@ -51,7 +51,16 @@ export default function ListProducto({
     const [rowsPerPage, setRowsPerPage] = useState(7);
     const [openAlert, setOpenAlert] = useState(false);
     const {openDialog} = useStore();
-    const [newDatos, setNewDatos] = useState({a: 'marlon'});
+    const [editDatos, setEditDatos] = useState({
+        id: 0,
+        categoria_id: '0',
+        nombre: '',
+        stock: '',
+        precio: 0,
+        codigo: '',
+        descripcion: '',
+        fechaingreso: ''
+    });
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -84,7 +93,7 @@ export default function ListProducto({
     }
 
     const cargarDatosEditar = (productoEditar) => {
-        setNewDatos(productoEditar);
+        setEditDatos(productoEditar);
         openDialog();
     }
 
@@ -260,7 +269,7 @@ export default function ListProducto({
                     <AlertSucces Open={openAlert} setOpen={setOpenAlert} mensaje={'Productos Insertados!'}
                                  type={'success'}/>
 
-                    <ModalActualizar Datos={{newDatos, setNewDatos, categorias}}/>
+                    <ModalActualizar {...{editDatos, setEditDatos, categorias}}/>
                 </Card>
             </Grow>
         </>
