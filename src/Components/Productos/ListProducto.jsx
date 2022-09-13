@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
     Avatar,
     Button,
@@ -19,38 +19,38 @@ import DeleteIcon from '@mui/icons-material/DeleteForeverOutlined';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBagOutlined';
 import List from "@mui/material/List";
 import Alert from "@mui/material/Alert";
-import {TransitionGroup} from "react-transition-group";
-import {Add} from "@mui/icons-material";
+import { TransitionGroup } from "react-transition-group";
+import { Add } from "@mui/icons-material";
 import productoApi from "../../Services/API/ProductoApi";
 import AlertSucces from '../Alertas/AlertSucces';
 import ModalActualizar from "./ModalActualizar";
 import useStore from "../../Stores/formContext";
 
 const headtable = [
-    {id: 1, label: 'Id', bg: "273565", color: 'white', bor: 0},
-    {id: 2, label: 'Código', bg: "273565", color: 'white', bor: 0},
-    {id: 3, label: 'Nombre', bg: "273565", color: 'white', bor: 0},
-    {id: 4, label: 'Stock', bg: "273565", color: 'white', bor: 0},
-    {id: 6, label: 'Precio', bg: "273565", color: 'white', bor: 0},
-    {id: 5, label: 'Fecha Ingreso', bg: "273565", color: 'white', bor: 0},
-    {id: 7, label: 'Categoría', bg: "273565", color: 'white', bor: 0},
-    {id: 8, label: 'Acciones', bg: "273565", color: 'white', bor: 0},
+    { id: 1, label: 'Id', bg: "273565", color: 'white', bor: 0 },
+    { id: 2, label: 'Código', bg: "273565", color: 'white', bor: 0 },
+    { id: 3, label: 'Nombre', bg: "273565", color: 'white', bor: 0 },
+    { id: 4, label: 'Stock', bg: "273565", color: 'white', bor: 0 },
+    { id: 6, label: 'Precio', bg: "273565", color: 'white', bor: 0 },
+    { id: 5, label: 'Fecha Ingreso', bg: "273565", color: 'white', bor: 0 },
+    { id: 7, label: 'Categoría', bg: "273565", color: 'white', bor: 0 },
+    { id: 8, label: 'Acciones', bg: "273565", color: 'white', bor: 0 },
 ]
 
 export default function ListProducto({
-                                         productos,
-                                         accion,
-                                         setAccion,
-                                         listaProductos,
-                                         setListaProductos,
-                                         actualizar,
-                                         setActualizar,
-                                         categorias
-                                     }) {
+    productos,
+    accion,
+    setAccion,
+    listaProductos,
+    setListaProductos,
+    actualizar,
+    setActualizar,
+    categorias
+}) {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(7);
     const [openAlert, setOpenAlert] = useState(false);
-    const {openDialog} = useStore();
+    const { openDialog } = useStore();
     const [editDatos, setEditDatos] = useState({
         id: 0,
         categoria_id: '0',
@@ -150,7 +150,7 @@ export default function ListProducto({
                                                         <IconButton
                                                             color='error'
                                                         >
-                                                            <DeleteIcon/>
+                                                            <DeleteIcon />
                                                         </IconButton>
                                                     </Tooltip>
                                                 </TableCell>
@@ -162,7 +162,7 @@ export default function ListProducto({
                         </Table>
                     </TableContainer>
                     <TablePagination
-                        sx={{background: 'white', width: '100%'}}
+                        sx={{ background: 'white', width: '100%' }}
                         rowsPerPageOptions={[7, 14]}
                         component="div"
                         count={productos.length}
@@ -180,17 +180,17 @@ export default function ListProducto({
     return (
         <>
             <Grow in={true} timeout={300}>
-                <Card sx={{margin: 2, overflow: "auto"}}> {/* maxHeight: '80.5vh', minHeight: '80.5vh'*/}
+                <Card sx={{ margin: 2, overflow: "auto" }}> {/* maxHeight: '80.5vh', minHeight: '80.5vh'*/}
                     <CardContent>
                         <Button variant={accion === 1 ? 'outlined' : 'text'} onClick={() => handleChangeAccion(1)}>
                             Inventario
                         </Button>
-                        <Button sx={{marginLeft: 3}} variant={accion === 2 ? 'outlined' : "text"}
-                                onClick={() => handleChangeAccion(2)}>
+                        <Button sx={{ marginLeft: 3 }} variant={accion === 2 ? 'outlined' : "text"}
+                            onClick={() => handleChangeAccion(2)}>
                             Ingresar Productos
                         </Button>
                         {accion === 1 ?
-                            <Paper sx={{width: '100%', overflow: 'auto', marginTop: 2}}>
+                            <Paper sx={{ width: '100%', overflow: 'auto', marginTop: 2 }}>
                                 {Prevenir()}
                             </Paper>
                             : accion === 2 ?
@@ -202,7 +202,7 @@ export default function ListProducto({
                                     minHeight: '54vh'
                                 }}>
                                     {listaProductos.length > 0 ?
-                                        <List sx={{paddingX: 4}}>
+                                        <List sx={{ paddingX: 4 }}>
                                             <TransitionGroup>
                                                 {listaProductos.map((item) => {
                                                     return (
@@ -215,14 +215,14 @@ export default function ListProducto({
                                                                             onClick={() => handleEliminar(item.idL)}
                                                                             color='error'
                                                                             edge="end">
-                                                                            <DeleteIcon/>
+                                                                            <DeleteIcon />
                                                                         </IconButton>
                                                                     </Tooltip>
                                                                 }
                                                             >
                                                                 <ListItemAvatar>
-                                                                    <Avatar sx={{background: '#e7ebfc'}}>
-                                                                        <ShoppingBagIcon color="primary"/>
+                                                                    <Avatar sx={{ background: '#e7ebfc' }}>
+                                                                        <ShoppingBagIcon color="primary" />
                                                                     </Avatar>
                                                                 </ListItemAvatar>
                                                                 <ListItemText
@@ -240,7 +240,7 @@ export default function ListProducto({
                                         </List>
                                         :
                                         <Zoom in={true}>
-                                            <Stack sx={{width: '100%'}} spacing={2}>
+                                            <Stack sx={{ width: '100%' }} spacing={2}>
                                                 <Alert severity="error">Lista De Productos Vacía</Alert>
                                             </Stack>
                                         </Zoom>
@@ -250,13 +250,13 @@ export default function ListProducto({
                         }
                     </CardContent>
                     {accion === 2 ?
-                        <CardActions sx={{display: 'flex', justifyContent: 'center', paddingX: 3}}>
+                        <CardActions sx={{ display: 'flex', justifyContent: 'center', paddingX: 3 }}>
                             <Button
                                 disabled={listaProductos.length === 0}
-                                sx={{boxShadow: 5, flexWrap: 'wrap', overflow: 'hidden', marginBottom: 2}}
+                                sx={{ boxShadow: 5, flexWrap: 'wrap', overflow: 'hidden', marginBottom: 2 }}
                                 variant="contained"
                                 size="large"
-                                startIcon={<Add color='white'/>}
+                                startIcon={<Add color='white' />}
                                 type='submit'
                                 onClick={() => insertar()}
                             >
@@ -267,9 +267,9 @@ export default function ListProducto({
                         null
                     }
                     <AlertSucces Open={openAlert} setOpen={setOpenAlert} mensaje={'Productos Insertados!'}
-                                 type={'success'}/>
+                        type={'success'} />
 
-                    <ModalActualizar {...{editDatos, setEditDatos, categorias}}/>
+                    <ModalActualizar {...{ editDatos, setEditDatos, categorias }} />
                 </Card>
             </Grow>
         </>

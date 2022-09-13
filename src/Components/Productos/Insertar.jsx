@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Button, Card, CardActions, CardContent, Grid, Grow, InputAdornment, MenuItem, TextField, Typography
 } from "@mui/material";
-import {Add, MonetizationOnOutlined} from "@mui/icons-material";
+import { Add, MonetizationOnOutlined } from "@mui/icons-material";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import DatePicker from "@mui/lab/DatePicker";
@@ -63,9 +63,9 @@ export default function Insertar() {
     const handleDate = (fecha) => {
         setDate(fecha);
         if (date) {
-            setNewProducto({...newProducto, fechaingreso: validarFecha(date)});
+            setNewProducto({ ...newProducto, fechaingreso: validarFecha(date) });
         } else {
-            setNewProducto({...newProducto, fechaingreso: ''});
+            setNewProducto({ ...newProducto, fechaingreso: '' });
         }
     }
 
@@ -110,9 +110,9 @@ export default function Insertar() {
 
     const anadir = () => {
         validar();
-        validate.codigoValidado = validarCodigo({productos}, newProducto.codigo);
+        validate.codigoValidado = validarCodigo({ productos }, newProducto.codigo);
         if (validate.codigoValidado === false && formularioValidado) {
-            setNewProducto({...newProducto, idL: idLocal});
+            setNewProducto({ ...newProducto, idL: idLocal });
             setIdLocal(idLocal + 1);
             setListaProductos([...listaProductos, newProducto]);
             setAcccion(2);
@@ -128,12 +128,11 @@ export default function Insertar() {
         <>
             <Grid item xs={12} sm={10} md={4} lg={4} xl={3}>
                 <Grow in={true} timeout={150}>
-                    <Card sx={{margin: 2, overflow: 'auto', paddingBottom: 2}}>
+                    <Card sx={{ margin: 2, overflow: 'auto', paddingBottom: 2 }}>
                         <CardContent>
                             <Typography marginBottom={1} variant='h6' fontWeight={600} color='primary.main'
-                                        align='center'>
-                                Agregar Productos <br/>
-                                validar codigo y que los productos no agregan en tiempo real
+                                align='center'>
+                                Agregar Productos <br />
                             </Typography>
                             <Grid container spacing={2} paddingX={3} justifyContent='center'>
                                 <Grid item xs={12} lg={12}>
@@ -150,7 +149,7 @@ export default function Insertar() {
                                         variant="outlined"
                                         placeholder="Nombre Producto"
                                         size="normal"
-                                        inputProps={{maxLength: 19}}
+                                        inputProps={{ maxLength: 19 }}
                                     />
                                 </Grid>
 
@@ -164,12 +163,12 @@ export default function Insertar() {
                                         error={(validate.codigo && newProducto.codigo.length === 0) || validate.codigoValidado}
                                         helperText={validate.codigoValidado ? 'Código Existente!' : false}
                                         fullWidth
-                                        sx={{borderRadius: 4}}
+                                        sx={{ borderRadius: 4 }}
                                         margin="none"
                                         variant="outlined"
                                         label="Código"
                                         size="small"
-                                        inputProps={{maxLength: 9}}
+                                        inputProps={{ maxLength: 9 }}
                                     >
                                     </TextField>
                                 </Grid>
@@ -190,7 +189,7 @@ export default function Insertar() {
                                         type="number"
                                         InputProps={{
                                             endAdornment: (<InputAdornment position="end">
-                                                <MonetizationOnOutlined/>
+                                                <MonetizationOnOutlined />
                                             </InputAdornment>)
                                         }}
                                     >
@@ -268,8 +267,8 @@ export default function Insertar() {
                                     <TextField
                                         name='descripcion'
                                         onChange={inputChange} onBlur={() => setValidate({
-                                        ...validate, descripcion: (newProducto.descripcion.length === 0)
-                                    })}
+                                            ...validate, descripcion: (newProducto.descripcion.length === 0)
+                                        })}
                                         error={validate.descripcion && newProducto.descripcion.length === 0}
                                         fullWidth
                                         variant='outlined'
@@ -279,18 +278,18 @@ export default function Insertar() {
                                         label="Descripción"
                                         margin='none'
                                         type='text'
-                                        inputProps={{maxLength: 50,}}
+                                        inputProps={{ maxLength: 50, }}
                                     >
                                     </TextField>
                                 </Grid>
                             </Grid>
                         </CardContent>
-                        <CardActions sx={{display: 'flex', justifyContent: 'center', paddingX: 3}}>
+                        <CardActions sx={{ display: 'flex', justifyContent: 'center', paddingX: 3 }}>
                             <Button
-                                sx={{boxShadow: 5, flexWrap: 'wrap', overflow: 'hidden', width: '75%'}}
+                                sx={{ boxShadow: 5, flexWrap: 'wrap', overflow: 'hidden', width: '75%' }}
                                 variant="contained"
                                 size="large"
-                                startIcon={<Add color='white'/>}
+                                startIcon={<Add color='white' />}
                                 type='submit'
                                 onClick={() => anadir()}
                             >
@@ -311,7 +310,7 @@ export default function Insertar() {
                     actualizar={actualizar}
                     setActualizar={setActualizar}
                 />
-                <AlertError Open={openAlert} setOpen={setOpenAlert}/>
+                <AlertError Open={openAlert} setOpen={setOpenAlert} />
             </Grid>
         </>)
 }

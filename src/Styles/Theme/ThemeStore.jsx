@@ -1,4 +1,4 @@
-import {createTheme} from "@mui/material";
+import { createTheme } from "@mui/material";
 
 const theme = createTheme({
     palette: {
@@ -14,17 +14,17 @@ const theme = createTheme({
         }
     },
     typography: {
-        fontFamily: 'QuickSans',
+        fontSize: 12,
         button: {
             textTransform: 'uppercase',
         }
     },
     shape: {
         borderRadius: 12
-    }, components:{
-        MuiFilledInput:{
+    }, components: {
+        MuiFilledInput: {
             styleOverrides: {
-                root:{
+                root: {
                     borderRadius: "5px 5px 0px 0px",
                 }
             }
