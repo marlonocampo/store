@@ -1,4 +1,4 @@
-export default function validarCodigo({productos}, codigo) {
+export default function validarCodigo({ productos }, codigo, listaProductos) {
     let valido = false;
     if (productos.length > 0) {
         productos.forEach((cod) => {
@@ -6,6 +6,13 @@ export default function validarCodigo({productos}, codigo) {
                 valido = true;
             }
         });
+    }
+    if (listaProductos.length > 0) {
+        listaProductos.forEach((cod) => {
+            if (codigo === cod.codigo) {
+                valido = true;
+            }
+        })
     }
     return valido;
 }

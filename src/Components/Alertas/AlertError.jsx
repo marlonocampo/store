@@ -1,7 +1,7 @@
 import { Slide, Snackbar, Alert } from "@mui/material";
 import React from "react";
 
-export default function AlertError({ Open, setOpen }) {
+export default function AlertError({ Open, setOpen, msj }) {
     const Close = () => {
         setOpen(false);
     };
@@ -22,7 +22,7 @@ export default function AlertError({ Open, setOpen }) {
                     severity="error"
                     sx={{ width: "100%" }}
                 >
-                    Campos No Válidos!
+                    {msj}
                 </Alert>
             </Snackbar>
         </Slide>

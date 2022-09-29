@@ -31,6 +31,7 @@ export default function Insertar() {
   const [accion, setAcccion] = useState(1);
   const [idLocal, setIdLocal] = useState(1);
   const [actualizar, setActualizar] = useState(false);
+  const [categoriaError, setCategoriaError] = useState(false);
   const [newProducto, setNewProducto] = useState({
     idL: 0,
     nombre: "",
@@ -62,7 +63,8 @@ export default function Insertar() {
         setCategorias(lc);
       })
       .catch((error) => {
-        console.log("Error en listar categorias: " + error);
+        console.log(error);
+        setCategoriaError(true);
       });
 
     setLoading(true);
@@ -127,7 +129,7 @@ export default function Insertar() {
 
   const anadir = () => {
     validar();
-    validate.codigoValidado = validarCodigo({ productos }, newProducto.codigo);
+    validate.codigoValidado = validarCodigo({ productos }, newProducto.codigo, listaProductos);
     if (validate.codigoValidado === false && formularioValidado) {
       setNewProducto({ ...newProducto, idL: idLocal });
       setIdLocal(idLocal + 1);
@@ -376,7 +378,12 @@ export default function Insertar() {
           setActualizar={setActualizar}
           load={{ loading, setLoading }}
         />
-        <AlertError Open={openAlert} setOpen={setOpenAlert} />
+        <AlertError
+          Open={openAlert}
+          setOpen={setOpenAlert}
+          msj={"Campos No Válidos!"}
+        />
+        <AlertError Open={categoriaError} msj={"Error en listar categorias"} />
       </Grid>
     </>
   );
