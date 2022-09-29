@@ -21,12 +21,12 @@ ReactDOM.render(
       <SnackbarProvider maxSnack={2}>
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<App/>}>
-              <Route index element={<Home/>}/>
-              <Route path="Productos" element={<Productos/>}/>
-              <Route path="Ventas" element={<Ventas/>}/>
-              <Route path="Facturas" element={<Facturas/>}/>
-              <Route path="*" element={<NotFound/>}/>
+            <Route path="/" element={<App />}>
+              <Route index element={<Home />} />
+              <Route path="Productos" element={<Productos />} />
+              <Route path="Ventas" element={<Ventas />} />
+              <Route path="Facturas" element={<Facturas />} />
+              <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>
         </BrowserRouter>
@@ -35,4 +35,4 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById('root')
 )
-;
+  ;
