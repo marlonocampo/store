@@ -45,8 +45,7 @@ export default function CardsButton({titulo}) {
             component='img'
             image={titulo === 'Productos' ? imgProductos :
               titulo === 'Ventas' ? imgVentas :
-                titulo === 'Facturas' ? imgFacturas :
-                  null
+                titulo === 'Facturas' ? imgFacturas : ''
             }
           >
           </CardMedia>

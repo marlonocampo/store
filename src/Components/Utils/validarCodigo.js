@@ -1,16 +1,19 @@
-export default function validarCodigo({ productos }, codigo, listaProductos) {
-    let valido = false;
-    if (productos.length > 0) {
-        productos.forEach((cod) => {
-            if (cod.codigo === codigo) {
-                valido = true;
+export function validarCodigo(objtoActual, listaTemporal, listaExistente) {
+    const { codigo } = objtoActual;
+    let valido = true;
+
+    if (listaExistente.length > 0) {
+        listaExistente.forEach((item) => {
+            if (item.codigo === codigo) {
+                valido = false;
             }
         });
     }
-    if (listaProductos.length > 0) {
-        listaProductos.forEach((cod) => {
-            if (codigo === cod.codigo) {
-                valido = true;
+
+    if (listaTemporal.length > 0) {
+        listaTemporal.forEach((item) => {
+            if (codigo === item.codigo) {
+                valido = false;
             }
         })
     }

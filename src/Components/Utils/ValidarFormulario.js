@@ -1,23 +1,27 @@
-const vF = {}
-vF.Required = () => {
-    return true
+import { validarCodigo } from "./validarCodigo";
+export const validarFormulario = ([objetoInputs], listaTemporal, listaExistente) => {
+  let valido = true;
+  let camposNoValidos = {};
+  for (const name in objetoInputs) {
+    if (String(objetoInputs[name]).length === 0
+      || String(objetoInputs[name]) === '0'
+      || String(objetoInputs[name]) === 'null'
+      || String(objetoInputs[name]) === 'Invalid Date'
+    ) {
+      camposNoValidos[name] = true
+      valido = false;
+    }
+  }
+
+  const { codigo } = objetoInputs;
+  if (codigo && !validarCodigo(objetoInputs, listaTemporal, listaExistente)) {
+    valido = false;
+    camposNoValidos.codigo = 'existe';
+  }
+
+  return [valido, camposNoValidos];
 }
 
-vF.ValidarForm = ({newProducto}) => {
-    const validate = {}
-    if (newProducto.nombre.length === 0) {
-        validate.nombre = true;
-    } else if (newProducto.codigo.length === 0) {
-        validate.codigo = true
-    } else if (newProducto.precio.length === 0) {
-        validate.precio = true;
-    } else if (newProducto.stock.length === 0) {
-        validate.stock = true;
-    } else if (newProducto.categoria_id === 0) {
-        validate.categoria_id = 0;
-    } else if (newProducto.descripcion.length === 0) {
-        validate.categoria = true;
-    }
-    return validate;
+export const errorInputs = (value) => {
+  return (String(value).length === 0 || String(value) === '0' || String(value) == 'null' || String(value) === 'Invalid Date')
 }
-export default vF;

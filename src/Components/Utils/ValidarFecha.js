@@ -1,5 +1,9 @@
-function ValidarFecha (date) {
-    if(date){
+export function validDate(date) {
+    return (String(date) === 'Invalid Date' || date === null || String(date).length === 0)
+}
+
+export function formatDate(date) {
+    try {
         let day = date.getDate();
         let month = (date.getMonth() + 1);
         const year = date.getFullYear();
@@ -11,8 +15,7 @@ function ValidarFecha (date) {
             month = '0' + month;
         }
         return (year + "-" + month + "-" + day);
-    }else {
-        return null;
+    } catch (error) {
+        return '';
     }
 }
-export default ValidarFecha;

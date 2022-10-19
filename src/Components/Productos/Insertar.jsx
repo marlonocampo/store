@@ -17,30 +17,27 @@ import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import DatePicker from "@mui/lab/DatePicker";
 import ListProducto from "./ListProducto";
 import AlertError from "../Alertas/AlertError";
-import validarCodigo from "../Utils/validarCodigo";
-import validarFecha from "../Utils/ValidarFecha";
 import { listaProductosApi } from "../../Services/API/ProductoApi";
 import { listaCategorias } from "../../Services/API/categoriaApi";
-
+import { validDate } from "../Utils/ValidarFecha";
+import { errorInputs, validarFormulario } from "../Utils/validarFormulario";
+import { logErrors } from "../Utils/logErrros";
 export default function Insertar() {
   const [loading, setLoading] = useState(false);
   const [productos, setProductos] = useState([]);
-  const [date, setDate] = useState(null);
   const [categorias, setCategorias] = useState([]);
   const [listaProductos, setListaProductos] = useState([]);
   const [accion, setAcccion] = useState(1);
-  const [idLocal, setIdLocal] = useState(1);
   const [actualizar, setActualizar] = useState(false);
   const [categoriaError, setCategoriaError] = useState(false);
   const [newProducto, setNewProducto] = useState({
-    idL: 0,
+    idL: 1,
     nombre: "",
     codigo: "",
     precio: "",
     fechaingreso: "",
     stock: "",
     categoria_id: 0,
-    nombrecategoria: "",
     descripcion: "",
   });
 
@@ -52,93 +49,63 @@ export default function Insertar() {
     stock: false,
     categoria_id: false,
     descripcion: false,
-    codigoValidado: false,
+    codigoValido: false,
   });
-  let formularioValidado = true;
-  const [openAlert, setOpenAlert] = useState();
+
+  const [openAlert, setOpenAlert] = useState(false);
 
   useEffect(() => {
     listaCategorias()
-      .then((lc) => {
-        setCategorias(lc);
-      })
+      .then((lc) => setCategorias(lc))
       .catch((error) => {
-        console.log(error);
+        logErrors(error);
         setCategoriaError(true);
       });
 
     setLoading(true);
     listaProductosApi()
-      .then((lp) => {
-        setProductos(lp);
-      })
-      .catch((error) => {
-        console.error("Error en listar Productos: " + error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+      .then((lp) => setProductos(lp))
+      .catch((error) => logErrors(error))
+      .finally(() => setLoading(false));
   }, [actualizar]);
 
-  const handleDate = (fecha) => {
-    setDate(fecha);
-    if (date) {
-      setNewProducto({ ...newProducto, fechaingreso: validarFecha(date) });
-    } else {
-      setNewProducto({ ...newProducto, fechaingreso: "" });
-    }
-  };
-
-  const inputChange = (event) => {
+  const inputChange = (e) => {
     setNewProducto({
-      ...newProducto, //ver video
-      [event.target.name]: event.target.value,
+      ...newProducto, //ver video operador spread
+      [e.target.name]: e.target.value,
     });
   };
 
-  const validar = () => {
-    if (newProducto.nombre.length === 0) {
-      validate.nombre = true;
-      formularioValidado = false;
+  const handleDate = (value) => {
+    setValidate({ ...validate, fechaingreso: validDate(value) });
+    setNewProducto({ ...newProducto, fechaingreso: value });
+  };
+
+  const errorInput = (prop) => {
+    setValidate({ ...validate, [prop]: errorInputs(newProducto[prop]) });
+  };
+
+  const validarDatosFormulario = () => {
+    const [formularioValido, camposNoValidos] = validarFormulario(
+      [newProducto],
+      listaProductos,
+      productos
+    );
+
+    console.log(validate);
+    if (!formularioValido) {
+      setOpenAlert(true);
+      setValidate(camposNoValidos);
+      return false;
     }
-    if (newProducto.codigo.length === 0) {
-      validate.codigo = true;
-      formularioValidado = false;
-    }
-    if (newProducto.precio.length === 0) {
-      validate.precio = true;
-      formularioValidado = false;
-    }
-    if (newProducto.fechaingreso.length === 0) {
-      validate.fechaingreso = true;
-      formularioValidado = false;
-    }
-    if (newProducto.stock.length === 0) {
-      validate.stock = true;
-      formularioValidado = false;
-    }
-    if (newProducto.categoria_id === 0) {
-      validate.categoria_id = true;
-      formularioValidado = false;
-    }
-    if (newProducto.descripcion.length === 0) {
-      validate.descripcion = true;
-      formularioValidado = false;
-    }
+    setNewProducto({ ...newProducto, idL: newProducto.idL + 1 });
+    return true;
   };
 
   const anadir = () => {
-    validar();
-    validate.codigoValidado = validarCodigo({ productos }, newProducto.codigo, listaProductos);
-    if (validate.codigoValidado === false && formularioValidado) {
-      setNewProducto({ ...newProducto, idL: idLocal });
-      setIdLocal(idLocal + 1);
+    if (validarDatosFormulario()) {
       setListaProductos([...listaProductos, newProducto]);
       setAcccion(2);
-      console.log(accion);
-    } else {
-      setOpenAlert(true);
-      console.log("Error en agregar");
     }
   };
 
@@ -150,82 +117,64 @@ export default function Insertar() {
             <CardContent>
               <Typography
                 marginBottom={1}
-                variant="h6"
+                variant='h6'
                 fontWeight={600}
-                color="primary.main"
-                align="center"
+                color='primary.main'
+                align='center'
               >
                 Agregar Productos <br />
               </Typography>
-              <Grid container spacing={2} paddingX={3} justifyContent="center">
+              <Grid container spacing={2} paddingX={3} justifyContent='center'>
                 <Grid item xs={12} lg={12}>
                   <TextField
                     onChange={inputChange}
-                    name="nombre"
-                    onBlur={() =>
-                      setValidate({
-                        ...validate,
-                        nombre: newProducto.nombre.length === 0,
-                      })
-                    }
-                    error={validate.nombre && newProducto.nombre.length === 0}
+                    name='nombre'
+                    onBlur={() => errorInput("nombre")}
+                    error={validate.nombre}
                     fullWidth
-                    label="Nombre"
-                    margin="dense"
-                    variant="outlined"
-                    placeholder="Nombre Producto"
-                    size="normal"
+                    label='Nombre'
+                    margin='dense'
+                    variant='outlined'
+                    placeholder='Nombre del artículo'
+                    size='normal'
                     inputProps={{ maxLength: 19 }}
                   />
                 </Grid>
 
                 <Grid item xs={6} sm={6} md={6} lg={6}>
                   <TextField
-                    name="codigo"
+                    name='codigo'
                     onChange={inputChange}
-                    onBlur={() =>
-                      setValidate({
-                        ...validate,
-                        codigo: newProducto.codigo.length === 0,
-                      })
-                    }
-                    error={
-                      (validate.codigo && newProducto.codigo.length === 0) ||
-                      validate.codigoValidado
-                    }
+                    onBlur={() => errorInput("codigo")}
+                    error={validate.codigo}
                     helperText={
-                      validate.codigoValidado ? "Código Existente!" : false
+                      validate.codigo === 'existe' ? "Código Existente!" : false
                     }
                     fullWidth
                     sx={{ borderRadius: 4 }}
-                    margin="none"
-                    variant="outlined"
-                    label="Código"
-                    size="small"
+                    margin='none'
+                    variant='outlined'
+                    label='Código'
+                    size='small'
                     inputProps={{ maxLength: 9 }}
                   ></TextField>
                 </Grid>
 
                 <Grid item xs={6} sm={6} md={6} lg={6}>
                   <TextField
-                    name="precio"
+                    name='precio'
                     onChange={inputChange}
-                    onBlur={() =>
-                      setValidate({
-                        ...validate,
-                        precio: newProducto.precio.length === 0,
-                      })
-                    }
-                    error={validate.precio && newProducto.precio.length === 0}
+                    onBlur={() => errorInput("precio")}
+                    error={validate.precio}
                     fullWidth
-                    margin="none"
-                    variant="outlined"
-                    label="precio"
-                    size="small"
-                    type="number"
+                    margin='none'
+                    variant='outlined'
+                    label='precio'
+                    size='small'
+                    type='number'
                     InputProps={{
                       endAdornment: (
-                        <InputAdornment position="end">
+                        <InputAdornment position='end'>
                           <MonetizationOnOutlined />
                         </InputAdornment>
                       ),
@@ -236,29 +185,20 @@ export default function Insertar() {
                 <Grid item xs={6} sm={6} md={6} lg={6}>
                   <LocalizationProvider dateAdapter={AdapterDateFns}>
                     <DatePicker
-                      value={date}
-                      name="fecha"
-                      label="Fecha"
-                      inputFormat="dd/MM/yyyy"
+                      value={newProducto.fechaingreso}
+                      name='fechaingreso'
+                      label='Fecha'
+                      inputFormat='dd/MM/yyyy'
                       onChange={handleDate}
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                          onBlur={() =>
-                            setValidate({
-                              ...validate,
-                              fechaingreso:
-                                newProducto.fechaingreso.length === 0,
-                            })
-                          }
-                          error={
-                            validate.fechaingreso &&
-                            newProducto.fechaingreso.length === 0
-                          }
-                          margin="none"
+                          onBlur={() => errorInput("fechaingreso")}
+                          error={validate.fechaingreso}
+                          margin='none'
                           fullWidth
-                          variant="outlined"
-                          size="small"
+                          variant='outlined'
+                          size='small'
                         />
                       )}
                     />
@@ -267,44 +207,31 @@ export default function Insertar() {
 
                 <Grid item xs={6} sm={6} md={6} lg={6}>
                   <TextField
-                    name="stock"
+                    name='stock'
                     onChange={inputChange}
-                    onBlur={() =>
-                      setValidate({
-                        ...validate,
-                        stock: newProducto.stock.length === 0,
-                      })
-                    }
-                    error={validate.stock && newProducto.stock.length === 0}
+                    onBlur={() => errorInput("stock")}
+                    error={validate.stock}
                     fullWidth
-                    margin="none"
-                    variant="outlined"
-                    label="Stock"
-                    size="small"
-                    type="number"
+                    margin='none'
+                    variant='outlined'
+                    label='Stock'
+                    size='small'
+                    type='number'
                   ></TextField>
                 </Grid>
-
                 <Grid item xs={12} lg={12}>
                   <TextField
                     onChange={inputChange}
-                    name="categoria_id"
+                    name='categoria_id'
                     value={newProducto.categoria_id}
-                    onBlur={() =>
-                      setValidate({
-                        ...validate,
-                        categoria_id: newProducto.categoria_id === 0,
-                      })
-                    }
-                    error={
-                      validate.categoria_id && newProducto.categoria_id === 0
-                    }
+                    onBlur={() => errorInput("categoria_id")}
+                    error={validate.categoria_id}
                     fullWidth
                     select
-                    variant="outlined"
-                    size="small"
-                    label="Categoría"
-                    margin="none"
+                    variant='outlined'
+                    size='small'
+                    label='Categoría'
+                    margin='none'
                   >
                     <MenuItem value={0}>Selecione una categoría...</MenuItem>
                     {categorias.length > 0
@@ -319,26 +246,18 @@ export default function Insertar() {
 
                 <Grid item xs={12} lg={12}>
                   <TextField
-                    name="descripcion"
+                    name='descripcion'
                     onChange={inputChange}
-                    onBlur={() =>
-                      setValidate({
-                        ...validate,
-                        descripcion: newProducto.descripcion.length === 0,
-                      })
-                    }
-                    error={
-                      validate.descripcion &&
-                      newProducto.descripcion.length === 0
-                    }
+                    onBlur={() => errorInput("descripcion")}
+                    error={validate.descripcion}
                     fullWidth
-                    variant="outlined"
+                    variant='outlined'
                     multiline
                     rows={3}
-                    size="small"
-                    label="Descripción"
-                    margin="none"
-                    type="text"
+                    size='small'
+                    label='Descripción'
+                    margin='none'
+                    type='text'
                     inputProps={{ maxLength: 50 }}
                   ></TextField>
                 </Grid>
@@ -354,10 +273,10 @@ export default function Insertar() {
                   overflow: "hidden",
                   width: "75%",
                 }}
-                variant="contained"
-                size="large"
-                startIcon={<Add color="white" />}
-                type="submit"
+                variant='contained'
+                size='large'
+                startIcon={<Add color='white' />}
+                type='submit'
                 onClick={anadir}
               >
                 Añadir
@@ -383,7 +302,11 @@ export default function Insertar() {
           setOpen={setOpenAlert}
           msj={"Campos No Válidos!"}
         />
-        <AlertError Open={categoriaError} msj={"Error en listar categorias"} />
+        <AlertError
+          Open={categoriaError}
+          setOpen={setCategoriaError}
+          msj={"Error en listar categorias"}
+        />
       </Grid>
     </>
   );

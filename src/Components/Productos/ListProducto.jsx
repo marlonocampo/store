@@ -36,6 +36,7 @@ import AlertSucces from "../Alertas/AlertSucces";
 import ModalActualizar from "./ModalActualizar";
 import useStore from "../../Stores/formContext";
 import { Loading } from "../Default/Loading";
+import { logErrors } from "../Utils/logErrros";
 
 const headtable = [
   { id: 1, label: "Id", bg: "273565", color: "white", bor: 0 },
@@ -96,13 +97,11 @@ export default function ListProducto({
 
   const insertar = async () => {
     const insert = await insertarProductoApi(listaProductos);
-    if (insert === true) {
+    if (insert) {
       setAccion(1);
-      setActualizar(actualizar ? false : true); //No cambiar esta lógica
+      setActualizar(!actualizar); //No cambiar esta lógica
       setOpenAlert(true);
       setListaProductos([]);
-    } else {
-      console.log("Error en insertar productos!");
     }
   };
 
@@ -116,7 +115,7 @@ export default function ListProducto({
       return <Loading />;
     }
     return (
-      <Typography m={3} align={"center"} variant="h5">
+      <Typography m={3} align={"center"} variant='h5'>
         Algo salió mal! :(
       </Typography>
     );
@@ -126,7 +125,7 @@ export default function ListProducto({
     return (
       <>
         <TableContainer>
-          <Table stickyHeader size="small">
+          <Table stickyHeader size='small'>
             <TableHead>
               <TableRow>
                 {headtable.map((col) => {
@@ -152,32 +151,32 @@ export default function ListProducto({
                   return (
                     <TableRow
                       hover
-                      role="checkbox"
+                      role='checkbox'
                       tabIndex={-1}
                       key={producto.id}
                     >
-                      <TableCell align="left"> {producto.id} </TableCell>
-                      <TableCell align="left"> {producto.codigo} </TableCell>
-                      <TableCell align="left"> {producto.nombre} </TableCell>
-                      <TableCell align="left"> {producto.precio} </TableCell>
-                      <TableCell align="left"> {producto.stock} </TableCell>
-                      <TableCell align="left">
+                      <TableCell align='left'> {producto.id} </TableCell>
+                      <TableCell align='left'> {producto.codigo} </TableCell>
+                      <TableCell align='left'> {producto.nombre} </TableCell>
+                      <TableCell align='left'> {producto.precio} </TableCell>
+                      <TableCell align='left'> {producto.stock} </TableCell>
+                      <TableCell align='left'>
                         {producto.fechacreacion}
                       </TableCell>
-                      <TableCell align="left">
+                      <TableCell align='left'>
                         {producto.nombrecategoria}
                       </TableCell>
                       <TableCell>
-                        <Tooltip title="Editar">
+                        <Tooltip title='Editar'>
                           <IconButton
-                            color="primary"
+                            color='primary'
                             onClick={() => cargarDatosEditar(producto)}
                           >
                             <EditIcon />
                           </IconButton>
                         </Tooltip>
-                        <Tooltip title="Eliminar">
-                          <IconButton color="error">
+                        <Tooltip title='Eliminar'>
+                          <IconButton color='error'>
                             <DeleteIcon />
                           </IconButton>
                         </Tooltip>
@@ -191,7 +190,7 @@ export default function ListProducto({
         <TablePagination
           sx={{ background: "white", width: "100%" }}
           rowsPerPageOptions={[7, 14]}
-          component="div"
+          component='div'
           count={productos.length}
           rowsPerPage={rowsPerPage}
           page={page}
@@ -244,11 +243,11 @@ export default function ListProducto({
                             <ListItem
                               key={item.idL}
                               secondaryAction={
-                                <Tooltip title="Eliminar">
+                                <Tooltip title='Eliminar'>
                                   <IconButton
                                     onClick={() => handleEliminar(item.idL)}
-                                    color="error"
-                                    edge="end"
+                                    color='error'
+                                    edge='end'
                                   >
                                     <DeleteIcon />
                                   </IconButton>
@@ -257,7 +256,7 @@ export default function ListProducto({
                             >
                               <ListItemAvatar>
                                 <Avatar sx={{ background: "#e7ebfc" }}>
-                                  <ShoppingBagIcon color="primary" />
+                                  <ShoppingBagIcon color='primary' />
                                 </Avatar>
                               </ListItemAvatar>
                               <ListItemText
@@ -276,7 +275,7 @@ export default function ListProducto({
                 ) : (
                   <Zoom in={true}>
                     <Stack sx={{ width: "100%" }} spacing={2}>
-                      <Alert severity="error">Lista De Productos Vacía</Alert>
+                      <Alert severity='error'>Lista De Productos Vacía</Alert>
                     </Stack>
                   </Zoom>
                 )}
@@ -297,10 +296,10 @@ export default function ListProducto({
                   overflow: "hidden",
                   marginBottom: 2,
                 }}
-                variant="contained"
-                size="large"
-                startIcon={<Add color="white" />}
-                type="submit"
+                variant='contained'
+                size='large'
+                startIcon={<Add color='white' />}
+                type='submit'
                 onClick={insertar}
               >
                 Insertar
