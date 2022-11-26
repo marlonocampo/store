@@ -16,28 +16,27 @@ import {
   Tooltip,
   Typography,
   Zoom,
+  Paper,
+  TableContainer,
+  Table,
+  TableHead,
+  TableRow,
+  TableBody,
+  TablePagination,
+  Alert,
 } from "@mui/material";
-import Paper from "@mui/material/Paper";
-import TableContainer from "@mui/material/TableContainer";
-import Table from "@mui/material/Table";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import TableBody from "@mui/material/TableBody";
-import TablePagination from "@mui/material/TablePagination";
 import EditIcon from "@mui/icons-material/ModeEditOutlined";
 import DeleteIcon from "@mui/icons-material/DeleteForeverOutlined";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBagOutlined";
 import List from "@mui/material/List";
-import Alert from "@mui/material/Alert";
 import { TransitionGroup } from "react-transition-group";
 import { Add } from "@mui/icons-material";
 import { insertarProductoApi } from "../../Services/API/ProductoApi";
-import AlertSucces from "../Alertas/AlertSucces";
-import ModalActualizar from "./ModalActualizar";
+import Editar from "./Editar";
 import useStore from "../../Stores/formContext";
 import { Loading } from "../Default/Loading";
+import Notificacion from "../Alertas/Notificacion";
 import { logErrors } from "../Utils/logErrros";
-
 const headtable = [
   { id: 1, label: "Id", bg: "273565", color: "white", bor: 0 },
   { id: 2, label: "Código", bg: "273565", color: "white", bor: 0 },
@@ -60,9 +59,13 @@ export default function ListProducto({
   categorias,
   load,
 }) {
+  const [notificacion, setNotificacion] = useState({
+    open: false,
+    type: "e",
+    msj: "",
+  });
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(7);
-  const [openAlert, setOpenAlert] = useState(false);
   const { openDialog } = useStore();
   const [editDatos, setEditDatos] = useState({
     id: 0,
@@ -75,7 +78,7 @@ export default function ListProducto({
     fechaingreso: "",
   });
 
-  const handleChangePage = (newPage) => {
+  const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
@@ -96,13 +99,30 @@ export default function ListProducto({
   };
 
   const insertar = async () => {
-    const insert = await insertarProductoApi(listaProductos);
-    if (insert) {
-      setAccion(1);
-      setActualizar(!actualizar); //No cambiar esta lógica
-      setOpenAlert(true);
-      setListaProductos([]);
-    }
+    await insertarProductoApi(listaProductos)
+      .then((res) => {
+        if (!res.exito) {
+          throw res.msj;
+        }
+        setNotificacion({
+          ...notificacion,
+          open: true,
+          type: "s",
+          msj: "Producto(s) insertado!",
+        });
+        setAccion(1);
+        setActualizar(!actualizar);
+        setListaProductos([]);
+      })
+      .catch((error) => {
+        logErrors(error);
+        setNotificacion({
+          ...notificacion,
+          open: true,
+          type: "e",
+          msj: "Error al insertar!",
+        });
+      });
   };
 
   const cargarDatosEditar = (productoEditar) => {
@@ -306,15 +326,10 @@ export default function ListProducto({
               </Button>
             </CardActions>
           ) : null}
-          <AlertSucces
-            Open={openAlert}
-            setOpen={setOpenAlert}
-            mensaje={"Productos Insertados!"}
-            type={"success"}
-          />
-          <ModalActualizar {...{ editDatos, setEditDatos, categorias }} />
+          <Editar {...{ editDatos, setEditDatos, categorias }} />
         </Card>
       </Grow>
+      <Notificacion notificacion={notificacion} setOpen={setNotificacion} />
     </>
   );
 }
