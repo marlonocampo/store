@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Avatar,
   Button,
@@ -31,7 +31,10 @@ import ShoppingBagIcon from "@mui/icons-material/ShoppingBagOutlined";
 import List from "@mui/material/List";
 import { TransitionGroup } from "react-transition-group";
 import { Add } from "@mui/icons-material";
-import { insertarProductoApi } from "../../Services/API/ProductoApi";
+import {
+  insertarProductoApi,
+  eliminarProducto,
+} from "../../Services/API/ProductoApi";
 import Editar from "./Editar";
 import useStore from "../../Stores/formContext";
 import { Loading } from "../Default/Loading";
@@ -67,16 +70,18 @@ export default function ListProducto({
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(7);
   const { openDialog } = useStore();
+  const [ejemplo, setEjemplo] = useState(0);
   const [editDatos, setEditDatos] = useState({
-    id: 0,
-    categoria_id: "0",
     nombre: "",
-    stock: "",
-    precio: 0,
     codigo: "",
-    descripcion: "",
+    precio: "",
     fechaingreso: "",
+    stock: "",
+    idcategoria: 0,
+    descripcion: "",
   });
+
+  const [nombreProductoTemp, setNombreProductoTemp] = useState("");
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -125,9 +130,24 @@ export default function ListProducto({
       });
   };
 
-  const cargarDatosEditar = (productoEditar) => {
+  const cargarDatosEditar = (productoEditar, codigo) => {
     setEditDatos(productoEditar);
+    setEditDatos({ ...productoEditar, codigoActual: codigo });
+    setNombreProductoTemp(productoEditar.nombre);
     openDialog();
+  };
+
+  const eliminar = (id) => {
+    eliminarProducto(id).then((res) => {
+      if (res.exito) {
+        setNotificacion({
+          ...notificacion,
+          open: true,
+          type: "s",
+          msj: "Producto Eliminado!",
+        });
+      }
+    });
   };
 
   const loadingFunc = () => {
@@ -190,13 +210,18 @@ export default function ListProducto({
                         <Tooltip title='Editar'>
                           <IconButton
                             color='primary'
-                            onClick={() => cargarDatosEditar(producto)}
+                            onClick={() =>
+                              cargarDatosEditar(producto, producto.codigo)
+                            }
                           >
                             <EditIcon />
                           </IconButton>
                         </Tooltip>
                         <Tooltip title='Eliminar'>
-                          <IconButton color='error'>
+                          <IconButton
+                            color='error'
+                            onClick={() => eliminar(producto.id)}
+                          >
                             <DeleteIcon />
                           </IconButton>
                         </Tooltip>
@@ -326,7 +351,17 @@ export default function ListProducto({
               </Button>
             </CardActions>
           ) : null}
-          <Editar {...{ editDatos, setEditDatos, categorias }} />
+          <Editar
+            {...{
+              editDatos,
+              setEditDatos,
+              categorias,
+              nombreTemp: nombreProductoTemp,
+              productos,
+              actualizar,
+              setActualizar,
+            }}
+          />
         </Card>
       </Grow>
       <Notificacion notificacion={notificacion} setOpen={setNotificacion} />

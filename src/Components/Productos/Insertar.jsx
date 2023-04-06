@@ -22,7 +22,6 @@ import { listaCategorias } from "../../Services/API/categoriaApi";
 import { validDate } from "../Utils/ValidarFecha";
 import { errorInputs, validarFormulario } from "../Utils/validarFormulario";
 import { logErrors } from "../Utils/logErrros";
-import { resetFormulario } from "../Utils/resetFormulario";
 export default function Insertar() {
   const [loading, setLoading] = useState(false);
   const [productos, setProductos] = useState([]);
@@ -75,7 +74,7 @@ export default function Insertar() {
 
   const inputChange = (e) => {
     setNewProducto({
-      ...newProducto, //ver video operador spread
+      ...newProducto,
       [e.target.name]: e.target.value,
     });
   };
@@ -110,20 +109,13 @@ export default function Insertar() {
     return true;
   };
 
-  const resetFormulario = () => {
-    for (const name in newProducto) {
-      if (name === "idL") continue;
-      setNewProducto({ ...newProducto, [name]: "" });
-    }
-  };
-
-  const anadir = (form) => {
+  const anadirProducto = (form) => {
     form.preventDefault();
-
-    // if (validarDatosFormulario()) {
-    //   setListaProductos([...listaProductos, newProducto]);
-    //   setAcccion(2);
-    // }
+    if (validarDatosFormulario()) {
+      setListaProductos([...listaProductos, newProducto]);
+      setAcccion(2);
+      form.target.reset(); //resetea el formulario y sus campos
+    }
   };
 
   return (
@@ -132,7 +124,7 @@ export default function Insertar() {
         <Grow in={true} timeout={150}>
           <Card sx={{ margin: 2, overflow: "auto" }}>
             <CardContent>
-              <form onSubmit={anadir}>
+              <form onSubmit={anadirProducto}>
                 <Typography
                   marginBottom={1}
                   variant='h6'
@@ -258,8 +250,8 @@ export default function Insertar() {
                       label='Categoría'
                       margin='none'
                     >
-                      <MenuItem selected value={0}>
-                        Selecione una categoría...
+                      <MenuItem defaultValue value='0'>
+                        <em>Selecione una categoría</em>
                       </MenuItem>
                       {categorias.length > 0
                         ? categorias.map((cat) => (
